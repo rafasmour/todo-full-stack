@@ -7,11 +7,9 @@ import { Todo } from "./todo.model";
 
 @Injectable()
 export class TodoService {
-    private todos: Todo[] = [];
     constructor(@InjectModel('Todo') private readonly todoModel: Model<Todo>) {
 
     }
-
     async insertTodo(
         @Body('task') task: string,
         @Body('done') done: boolean
