@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { Interface } from 'readline';
 
 export const todoSchema = new mongoose.Schema({
     task: String,

@@ -11,7 +11,7 @@ services:
     container_name: api 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`todo.mourou.gr`)&&Path(`/api`)"
+      - "traefik.http.routers.api.rule=Host(`app.localhost`)&&Path(`/api`)"
       - "traefik.http.routers.api.entrypoints=web"
     networks:
       - webgateway
@@ -24,7 +24,7 @@ services:
     container_name: app
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`todo.mourou.gr`)&&Path(`/app`)"
+      - "traefik.http.routers.app.rule=Host(`app.localhost`)&&Path(`/app`)"
       - "traefik.http.routers.app.entrypoints=web"
     networks:
       - webgateway
@@ -37,7 +37,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mongo.rule=Host(`db.mourou.gr`)"
+      - "traefik.http.routers.mongo.rule=Host(`db.localhost`)"
       - "traefik.http.routers.mongo.entrypoints=web"
     networks:
       - webgateway
@@ -48,10 +48,10 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_URL: mongodb://root:root@db.mourou.gr:27017
+      ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mongo-express.rule=Host(`dbexpress.mourou.gr`)"
+      - "traefik.http.routers.mongo-express.rule=Host(`dbexpress.localhost`)"
       - "traefik.http.routers.mongo-express.entrypoints=web"
     networks:
       - webgateway 

@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
   import { v4 as uuid } from 'uuid';
-  import Task from 'src/types/task';
+  import { Task } from '../types/task'
   import todoObject from './todoObject.vue'
   import { Ref, ref } from 'vue'
   import addTodo from './addTodo.vue'
@@ -36,7 +36,7 @@
   tasks.value.push( { id:uuid(),  title: `hi${i}`, done: false } )
   
   const hi = async () => {
-    const res = await axios.get('http://localhost:3000/todo')
+    const res = await axios.get('http://api:3000/todo')
     console.log(res) 
   }
   hi()
@@ -46,7 +46,7 @@
     console.log(index);
     console.log(tasks.value[index])
     tasks.value[index].done = !tasks.value[index].done
-    console.log(task.value[index])
+    console.log(tasks.value[index])
     
   }
   const deleteTask = ( id: string ) => {
