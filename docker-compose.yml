@@ -1,4 +1,4 @@
-# Use root/example as user/password credentials
+
 version: '3.1'
 networks:
   webgateway:
@@ -11,23 +11,27 @@ services:
     container_name: api 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`app.localhost`)&&Path(`/api`)"
+      - "traefik.http.routers.api.rule=Host(`todo.rafaelhome.mourou.gr`) && Path(`/api/{route:.*}`)"
       - "traefik.http.routers.api.entrypoints=web"
     networks:
       - webgateway
     volumes:
-      - ./src:/src
+      - ./api/src:/src
   app:
     build:
       context: ./app
       dockerfile: ./Dockerfile 
     container_name: app
+    command: "npm run dev"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`app.localhost`)&&Path(`/app`)"
+      - "traefik.http.routers.app.rule=Host(`todo.rafaelhome.mourou.gr`)" 
+      - traefik.http.services.app.loadbalancer.server.port=9000
       - "traefik.http.routers.app.entrypoints=web"
     networks:
       - webgateway
+    volumes:
+      - ./app/src:/src
   mongo:
     image: mongo
     container_name: mongo
@@ -35,10 +39,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mongo.rule=Host(`db.localhost`)"
-      - "traefik.http.routers.mongo.entrypoints=web"
     networks:
       - webgateway
   mongo-express:
@@ -48,45 +48,11 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017
+      ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mongo-express.rule=Host(`dbexpress.localhost`)"
+      - "traefik.http.routers.mongo-express.rule=Host(`dbexpress.rafaelhome.mourou.gr`)"
       - "traefik.http.routers.mongo-express.entrypoints=web"
+      - traefik.http.services.mongo-express.loadbalancer.server.port=8080
     networks:
       - webgateway 
-  # traefik:
-  #   image: "traefik:v2.10"
-  #   container_name: "traefik"
-  #   restart: always
-  #   command:
-  #     #- "--log.level=DEBUG"
-  #     - "--api.insecure=true"
-  #     - "--providers.docker=true"
-  #     - "--providers.docker.exposedbydefault=false"
-  #     - "--entrypoints.web.address=:80"
-  #     - "--api.dashboard=true"
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.traefik.rule=Host(`traefik.rafaelhome.mourou.gr`)"
-  #     - "traefik.http.routers.traefik.entrypoints=web"
-  #     - "traefik.http.routers.traefik.service=traefik@internal"
-  #   networks:
-  #     - webgateway
-
-  # whoami:
-  #   image: "traefik/whoami"
-  #   container_name: "simple-service"
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.whoami.rule=Host(`whoami.rafaelhome.mourou.gr`)"
-  #     - "traefik.http.routers.whoami.entrypoints=web"
-  #   networks:
-  #     - webgateway
-  #   depends_on:
-  #     - traefik
