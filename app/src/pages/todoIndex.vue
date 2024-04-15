@@ -36,7 +36,7 @@
   tasks.value.push( { id:uuid(),  title: `hi${i}`, done: false } )
   
   const hi = async () => {
-    const res = await axios.get('http://api:3000/todo')
+    const res = await axios.get('http://todo.rafaelhome.mourou.gr/api/todo')
     console.log(res) 
   }
   hi()
