@@ -7,8 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     TodoModule, 
     MongooseModule.forRoot(
-    `mongodb://nest:nest@mongo:27017`, 
-    { dbName: 'todo' }
+    `mongodb://root:root@mongo:27017/`
   ),
     ],
   controllers: [AppController],
