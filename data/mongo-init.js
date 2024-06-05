@@ -8,6 +8,6 @@ db.createUser({
 db.createUser({
   user: "nest",
   pwd: "nest",
-  roles: [{ role: "readWrite", db: "todo" }],
+  roles: [{ role: "root", db: "todo" }],
 });
 print("End Adding the User Roles.");

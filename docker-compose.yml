@@ -5,7 +5,7 @@ services:
   api:
     build:
       context: ./api
-      dockerfile: ./Dockerfile
+      dockerfile: ./api/Dockerfile
     container_name: api 
     labels:
       - "traefik.enable=true"
@@ -15,7 +15,6 @@ services:
       - "--providers.docker.network=webgateway"
     networks:
       - webgateway
-      - default
     ports: 
       - 3000:3000
     volumes:
@@ -25,7 +24,7 @@ services:
   app:
     build:
       context: ./app
-      dockerfile: ./Dockerfile 
+      dockerfile: ./app/Dockerfile 
     container_name: app
     command: "npm run dev"
     labels:
@@ -52,7 +51,7 @@ services:
     ports:
       - 27017:27017
     networks:
-      - default
+      - webgateway
   mongo-express:
     image: mongo-express
     container_name: mongo_express
@@ -64,13 +63,12 @@ services:
       - 8081:8081
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mongo-express.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/dbAdmin`)"
+      - "traefik.http.routers.mongo-express.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/db/admin`)"
       - "traefik.http.routers.mongo-express.entrypoints=web"
       - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
       - "--providers.docker.network=webgateway"
     networks:
       - webgateway 
-      - default
     depends_on:
       - mongo
   
