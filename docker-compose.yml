@@ -5,13 +5,17 @@ services:
   api:
     build:
       context: ./api
-      dockerfile: ./api/Dockerfile
+      dockerfile: ./Dockerfile
     container_name: api 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.api.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/api/`)"
       - "traefik.http.services.app.loadbalancer.server.port=3000"
       - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.cors.headers.addvaryheader=true"
       - "--providers.docker.network=webgateway"
     networks:
       - webgateway
@@ -24,19 +28,19 @@ services:
   app:
     build:
       context: ./app
-      dockerfile: ./app/Dockerfile 
+      dockerfile: ./Dockerfile 
+    ports: 
+      - 9000:9000
     container_name: app
     command: "npm run dev"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/app`)"  
+      - "traefik.http.routers.app.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/app/#/`)"  
       - "traefik.http.services.app.loadbalancer.server.port=9000"
       - "traefik.http.routers.app.entrypoints=web"
       - "--providers.docker.network=webgateway"
     networks:
       - webgateway
-    ports: 
-      - 9000:9000
     volumes:
       - ./app/src:/src
   mongo:
@@ -63,7 +67,7 @@ services:
       - 8081:8081
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mongo-express.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/db/admin`)"
+      - "traefik.http.routers.mongo-express.rule=Host(`dbadmin.rafaelhome.mourou.gr`)"
       - "traefik.http.routers.mongo-express.entrypoints=web"
       - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
       - "--providers.docker.network=webgateway"

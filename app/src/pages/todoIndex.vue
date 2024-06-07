@@ -32,12 +32,18 @@
   import axios from 'axios'
   const tasks: Ref<Task[]> = ref([]);
 
-  for( let i = 0; i< 3; i ++)
-  tasks.value.push( { id:uuid(),  title: `hi${i}`, done: false } )
   
   const hi = async () => {
     const res = await axios.get('http://todo.rafaelhome.mourou.gr/api/todo')
-    console.log(res) 
+
+    for ( let i = 0; i < res.data.length; i ++ )
+        tasks.value.push( 
+          {
+            id: res.data[i].id,
+            title: res.data[i].task,
+            done: res.data[i].done
+          }
+        )
   }
   hi()
   const changeDone = ( id: string) => {
@@ -60,6 +66,19 @@
       done: false
     })
   }
+  await window.addEventListener("keypress", () => {
+    for( let i = 0; i < tasks.value.length; i++ ) {
+        axios.delete(`http://todo.rafaelhome.mourou.gr/api/todo/${tasks.value[i].id}`)
+    
+        axios.post('http://todo.rafaelhome.mourou.gr/api/todo', 
+          {
+            task: tasks.value[i].title,
+            done: tasks.value[i].done
+          }
+        )
+      }
+    }
+  )
 </script>
 
 <style>
