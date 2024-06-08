@@ -20,8 +20,12 @@ export class TodoController {
         return result;
     }
     @Get()
-    getAllTodos() {
+    async getAllTodos() {
         return this.todoService.getTodo();
+    }
+    @Delete()
+    async deleteAllTodos() {
+        return this.todoService.deleteTodos();
     }
     @Get(':todoID')
     getSingleTodo(@Param('todoID') todoID: string) {

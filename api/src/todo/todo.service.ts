@@ -27,6 +27,11 @@ export class TodoService {
             done: todo.done
         }));
     }
+
+    async deleteTodos(){
+        const todos = await this.todoModel.deleteMany({}).exec();
+    }
+
     async getSingleTodo(todoID: string) {
         const todo = await this.findTodo(todoID);
         return {todo};
@@ -62,6 +67,7 @@ export class TodoService {
             throw new NotFoundException('Could not find Todo');
         }
     }
+
 
     private async findTodo(id: string): Promise<Todo>{
         let todo;

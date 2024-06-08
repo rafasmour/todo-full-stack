@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { Ref, ref } from 'vue' 
 const emit = defineEmits(['addTask'])
-const task: Ref<string> = ref('');
+let task: Ref<string> = ref('');
 const onSubmit = () => {
     if( !task.value ){
         alert('task cannot be empty');
@@ -18,8 +18,7 @@ const onSubmit = () => {
     }
         
     console.log(task.value)
-    emit('addTask', task.value)
-     
+    emit('addTask', task.value);
 }
 
 </script>

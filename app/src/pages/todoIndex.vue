@@ -17,9 +17,10 @@
         />
 
       
-      
+        
       
     </q-list>
+    <TodoSave @saveTasks="saveTasks"/>
   </q-page>
 </template>
 
@@ -30,11 +31,18 @@
   import { Ref, ref } from 'vue'
   import addTodo from './addTodo.vue'
   import axios from 'axios'
+import TodoSave from './todoSave.vue';
   const tasks: Ref<Task[]> = ref([]);
 
   
   const hi = async () => {
-    const res = await axios.get('http://todo.rafaelhome.mourou.gr/api/todo')
+    const res = await axios.get('http://172.26.0.4:3000/api/todo')
+    .then(
+      res => { console.log(res); return res; }
+    )
+    .catch(
+      err => { console.log(err); return err; }
+    );
 
     for ( let i = 0; i < res.data.length; i ++ )
         tasks.value.push( 
@@ -66,19 +74,28 @@
       done: false
     })
   }
-  await window.addEventListener("keypress", () => {
-    for( let i = 0; i < tasks.value.length; i++ ) {
-        axios.delete(`http://todo.rafaelhome.mourou.gr/api/todo/${tasks.value[i].id}`)
-    
-        axios.post('http://todo.rafaelhome.mourou.gr/api/todo', 
-          {
-            task: tasks.value[i].title,
-            done: tasks.value[i].done
-          }
-        )
-      }
-    }
-  )
+  const saveTasks = async () => {
+    await axios.delete('http://172.26.0.4:3000/api/todo')
+    .then(
+      res => { console.log(res); return res; }
+    )
+    .catch(
+      err => { console.log(err); return err; }
+    );
+    for( let i = 0; i < tasks.value.length; i++)
+      axios.post('http://172.26.0.4:3000/api/todo', 
+        {
+          task: tasks.value[i].title,
+          done: tasks.value[i].done
+        }
+      )
+      .then(
+        res => { console.log(res); return res; }
+      )
+      .catch(
+      err => { console.log(err); return err; }
+      );
+  }
 </script>
 
 <style>
