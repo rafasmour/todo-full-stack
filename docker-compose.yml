@@ -12,10 +12,6 @@ services:
       - "traefik.http.routers.api.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/api/`)"
       - "traefik.http.services.app.loadbalancer.server.port=3000"
       - "traefik.http.routers.api.entrypoints=web"
-      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=*"
-      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=*"
-      - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
-      - "traefik.http.middlewares.cors.headers.addvaryheader=true"
       - "--providers.docker.network=webgateway"
     networks:
       - webgateway
@@ -35,7 +31,7 @@ services:
     command: "npm run dev"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/app/#/`)"  
+      - "traefik.http.routers.app.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/`)"  
       - "traefik.http.services.app.loadbalancer.server.port=9000"
       - "traefik.http.routers.app.entrypoints=web"
       - "--providers.docker.network=webgateway"

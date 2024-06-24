@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const emit = defineEmits(["saveTasks"])
+const emit = defineEmits(['saveTasks'])
 
 const onSave = () => {
     emit('saveTasks')
