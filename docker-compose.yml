@@ -26,19 +26,19 @@ services:
       context: ./app
       dockerfile: ./Dockerfile 
     ports: 
-      - 9000:9000
+      - 8080:8080
     container_name: app
     command: "npm run dev"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/`)"  
-      - "traefik.http.services.app.loadbalancer.server.port=9000"
+      - "traefik.http.services.app.loadbalancer.server.port=8080"
       - "traefik.http.routers.app.entrypoints=web"
       - "--providers.docker.network=webgateway"
     networks:
       - webgateway
     volumes:
-      - ./app/src:/src
+      - ./app:/app
   mongo:
     image: mongo
     container_name: mongo
