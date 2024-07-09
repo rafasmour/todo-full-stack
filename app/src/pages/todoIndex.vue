@@ -1,27 +1,27 @@
 <template>
-  <q-page class="q-pa-lg bg-grey-3 ">
-    <h5>Todo</h5>
-    <addTodo @addTask="addTask"></addTodo>
-    <q-list 
-      class="bg-gray"
-      v-for="task in tasks"
-        :key="task.title"
-        tag="label" 
-      bordered
-      seperator
-    >
-        <todoObject
-        :task="task"
-        @changeDone="changeDone"
-        @deleteTask="deleteTask"
-        />
+    <q-page class="q-pa-lg bg-grey-3 ">
+      <h5>Todo</h5>
+      <addTodo @addTask="addTask"></addTodo>
+      <q-list 
+        class="bg-gray"
+        v-for="task in tasks"
+          :key="task.title"
+          tag="label" 
+        bordered
+        seperator
+      >
+          <todoObject
+          :task="task"
+          @changeDone="changeDone"
+          @deleteTask="deleteTask"
+          />
 
-      
         
-      
-    </q-list>
-    <TodoSave @saveTasks="saveTasks"/>
-  </q-page>
+          
+        
+      </q-list>
+      <TodoSave @saveTasks="saveTasks"/>
+    </q-page>
 </template>
 
 <script setup lang="ts">
@@ -36,7 +36,7 @@ import TodoSave from './todoSave.vue';
 
   
   const hi = async () => {
-    const res = await axios.get('http://172.26.0.4:3000/api/todo')
+    const res = await axios.get('http://172.26.0.2:3000/api/todo')
     .then(
       res => { console.log(res); return res; }
     )
@@ -75,7 +75,7 @@ import TodoSave from './todoSave.vue';
     })
   }
   const saveTasks = async () => {
-    await axios.delete('http://172.26.0.4:3000/api/todo')
+    await axios.delete('http://172.26.0.2:3000/api/todo')
     .then(
       res => { console.log(res); return res; }
     )
@@ -83,7 +83,7 @@ import TodoSave from './todoSave.vue';
       err => { console.log(err); return err; }
     );
     for( let i = 0; i < tasks.value.length; i++)
-      axios.post('http://172.26.0.4:3000/api/todo', 
+      axios.post('http://172.26.0.2:3000/api/todo', 
         {
           task: tasks.value[i].title,
           done: tasks.value[i].done

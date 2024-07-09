@@ -21,6 +21,7 @@ services:
       - ./api/src:/src
     depends_on:
       - mongo
+      - traefik
   app:
     build:
       context: ./app
@@ -31,7 +32,8 @@ services:
     command: "npm run dev"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`todo.rafaelhome.mourou.gr`) && PathPrefix(`/`)"  
+      - "traefik.http.routers.app=true"
+      - "traefik.http.routers.app.rule=Host(`todo.rafaelhome.mourou.gr`)"
       - "traefik.http.services.app.loadbalancer.server.port=8080"
       - "traefik.http.routers.app.entrypoints=web"
       - "--providers.docker.network=webgateway"
@@ -71,6 +73,47 @@ services:
       - webgateway 
     depends_on:
       - mongo
+      - traefik
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    restart: always
+    command:
+      #- "--log.level=DEBUG"
+      # - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--api.dashboard=true"
+      - "--providers.docker.network=webgateway"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ./traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - ./traefik/dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.rafaelhome.mourou.gr`)"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.routers.traefik.service=api@internal"
+    networks:
+      - webgateway
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.rafaelhome.mourou.gr`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+    networks:
+      - webgateway
+    depends_on:
+      - traefik
   
 networks:
   webgateway:
