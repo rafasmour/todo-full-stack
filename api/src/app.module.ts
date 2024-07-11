@@ -3,12 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TodoModule } from './todo/todo.module';
 import { MongooseModule } from '@nestjs/mongoose';
+const uri = `${process.env.DATABASE_URL}`
 @Module({
   imports: [
     TodoModule, 
     MongooseModule.forRoot(
-    `mongodb://root:root@mongo:27017/`
-  ),
+      process.env.DATABASE_URI
+    )
     ],
   controllers: [AppController],
   providers: [AppService],

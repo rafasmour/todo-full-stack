@@ -33,10 +33,10 @@
   import axios from 'axios'
 import TodoSave from './todoSave.vue';
   const tasks: Ref<Task[]> = ref([]);
-
-  
+  const api = `http://todo.${process.env.DOMAIN}/api`
+  console.log(api)
   const hi = async () => {
-    const res = await axios.get('http://todoapi.rafaelhome.mourou.gr')
+    const res = await axios.get(api)
     .then(
       res => { console.log(res); return res; }
     )
@@ -75,7 +75,7 @@ import TodoSave from './todoSave.vue';
     })
   }
   const saveTasks = async () => {
-    await axios.delete('http://todoapi.rafaelhome.mourou.gr')
+    await axios.delete(api)
     .then(
       res => { console.log(res); return res; }
     )
@@ -83,7 +83,7 @@ import TodoSave from './todoSave.vue';
       err => { console.log(err); return err; }
     );
     for( let i = 0; i < tasks.value.length; i++)
-      axios.post('http://todoapi.rafaelhome.mourou.gr', 
+      axios.post(api, 
         {
           task: tasks.value[i].title,
           done: tasks.value[i].done

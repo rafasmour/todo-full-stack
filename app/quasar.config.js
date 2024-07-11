@@ -12,7 +12,7 @@
 const { url } = require('inspector');
 const { configure } = require('quasar/wrappers');
 const { mergeConfig } = require('vite')
-
+require ('dotenv').config()
 module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
@@ -80,7 +80,9 @@ module.exports = configure(function (/* ctx */) {
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
 
-      
+      env: {
+        DOMAIN: process.env.DOMAIN
+      }
       // vitePlugins: [
       //   [ 'package-name', { ..options.. } ]
       // ]
@@ -142,7 +144,7 @@ module.exports = configure(function (/* ctx */) {
       // manualStoreHydration: true,
       // manualPostHydrationTrigger: true,
 
-      prodPort: 80, // The default port that the production server should use
+      prodPort: 3000, // The default port that the production server should use
                       // (gets superseded if process.env.PORT is specified at runtime)
 
       middlewares: [
