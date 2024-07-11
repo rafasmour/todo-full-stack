@@ -12,8 +12,7 @@ services:
     env_file: ".env"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api=true"
-      - "traefik.http.routers.api.rule=Host(`todo.${DOMAIN}`)"
+      - "traefik.http.routers.api.rule=Host(`todo.${DOMAIN}`) && PathPrefix(`/api`)"
       - "traefik.http.services.api.loadbalancer.server.port=${API_PORT}"
       - "traefik.http.routers.api.entrypoints=web"
       - "--providers.docker.network=webgateway"
@@ -74,7 +73,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.mongo-express.rule=Host(`dbadmin.${DOMAIN}`)"
       - "traefik.http.routers.mongo-express.entrypoints=web"
-      - "traefik.http.services.mongo-express.loadbalancer.server.port=${MONGO-EXPRESS_PORT}"
+      - "traefik.http.services.mongo-express.loadbalancer.server.port=${MONGO_EXPRESS_PORT}"
       - "--providers.docker.network=webgateway"
     networks:
       - webgateway 
@@ -91,13 +90,13 @@ services:
       # - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:${TRAEFIK_PORT_HTTP}"
+      - "--entrypoints.websecure.address=:${TRAEFIK_PORT_HTTPS}"
       - "--api.dashboard=true"
       - "--providers.docker.network=webgateway"
     ports:
-      - "80:80"
-      - "443:443"
+      - "${TRAEFIK_PORT_HTTP}:${TRAEFIK_PORT_HTTP}"
+      - "${TRAEFIK_PORT_HTTPS}:${TRAEFIK_PORT_HTTPS}"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - ./traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro

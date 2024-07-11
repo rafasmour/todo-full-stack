@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
       path: '/:catchAll(.*)*',
-        component: () => import('pages/Error404.vue'),
+        component: () => import('pages/todoIndex.vue'),
     }
 
   // Always leave this as last one,

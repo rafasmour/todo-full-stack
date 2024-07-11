@@ -5,4 +5,9 @@ db.createUser({
   pwd: "admin",
   roles: [{ role: "readWrite", db: "admin" }],
 });
+db.createUser({
+  user: "nest",
+  pwd: "nest",
+  roles: [{ role: "root", db: "todo" }],
+});
 print("End Adding the User Roles.");

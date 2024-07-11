@@ -12,7 +12,7 @@
 const { url } = require('inspector');
 const { configure } = require('quasar/wrappers');
 const { mergeConfig } = require('vite')
-require ('dotenv').config()
+
 module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
@@ -59,8 +59,12 @@ module.exports = configure(function (/* ctx */) {
       target: {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
         node: 'node16'
+        
       },
 
+      env: {
+        DOMAIN: process.env.DOMAIN,
+      },
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
@@ -80,9 +84,7 @@ module.exports = configure(function (/* ctx */) {
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
 
-      env: {
-        DOMAIN: process.env.DOMAIN
-      }
+      
       // vitePlugins: [
       //   [ 'package-name', { ..options.. } ]
       // ]
@@ -93,6 +95,7 @@ module.exports = configure(function (/* ctx */) {
       
       // https: true
       base: './',
+      cors: true,
       open: true, // opens browser window automatically
       port: 8080,
       },
@@ -144,7 +147,7 @@ module.exports = configure(function (/* ctx */) {
       // manualStoreHydration: true,
       // manualPostHydrationTrigger: true,
 
-      prodPort: 3000, // The default port that the production server should use
+      prodPort: 80, // The default port that the production server should use
                       // (gets superseded if process.env.PORT is specified at runtime)
 
       middlewares: [
