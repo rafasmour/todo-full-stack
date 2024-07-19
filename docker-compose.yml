@@ -112,7 +112,6 @@ services:
       - ./traefik/certs:/etc/certs
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
 
       
     networks:
