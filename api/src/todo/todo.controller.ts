@@ -6,7 +6,7 @@ import { TodoService } from "./todo.service";
 
 
 
-@Controller('api')
+@Controller('/api')
 export class TodoController {
     constructor(private readonly todoService: TodoService){
     }

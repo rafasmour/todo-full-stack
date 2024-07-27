@@ -44,7 +44,7 @@ import TodoSave from './todoSave.vue';
       err => { console.log(err); return err; }
     );
 
-    for ( let i = 0; i < res.data.length; i ++ )
+    for ( let i = 0; i < res.length; i ++ )
         tasks.value.push( 
           {
             id: res.data[i].id,

@@ -16,13 +16,16 @@ services:
       - "traefik.http.services.api.loadbalancer.server.port=${API_PORT}"
       - "--providers.docker.network=webgateway"
       - "traefik.http.routers.api.entrypoints=websecure"
-      - "traefik.http.routers.api.tls.certresolver=myresolver"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.tls.options=myTLSOptions@file"
+      - "traefik.http.routers.api.entrypoints.https.tls: {}"
     networks:
       - webgateway
     ports: 
       - ${API_PORT}:${API_PORT}
     volumes:
       - ./api/src:/src
+      - ./traefik/certs:/src/
     depends_on:
       - mongo
       - traefik
@@ -41,8 +44,8 @@ services:
       - "traefik.http.routers.app.rule=Host(`todo.${DOMAIN}`)"
       - "traefik.http.services.app.loadbalancer.server.port=${APP_PORT}"
       - "traefik.http.routers.app.entrypoints=websecure"
-      - "traefik.http.routers.app.tls.certresolver=myresolver"
-      - "--providers.docker.network=webgateway"
+      - "traefik.http.routers.app.tls.options=myTLSOptions@file"
+      - "traefik.http.routers.api.entrypoints.https.tls: {}"
     networks:
       - webgateway
     volumes:
@@ -74,9 +77,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mongo-express.rule=Host(`dbadmin.${DOMAIN}`)"
-      - "traefik.http.routers.mongo-express.entrypoints=web"
+      - "traefik.http.routers.mongo-express.entrypoints=websecure"
       - "traefik.http.services.mongo-express.loadbalancer.server.port=${MONGO_EXPRESS_PORT}"
       - "--providers.docker.network=webgateway"
+      - "traefik.http.routers.mongo-express.tls=true"
+      - "traefik.http.routers.mongo-express.tls.options=myTLSOptions@file"
     networks:
       - webgateway 
     depends_on:
