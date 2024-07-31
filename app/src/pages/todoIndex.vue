@@ -33,8 +33,8 @@
   import axios from 'axios'
 import TodoSave from './todoSave.vue';
   const tasks: Ref<Task[]> = ref([]);
-
-  const api = `todo.${process.env.DOMAIN}/api`;
+  console.log(process.env.DOMAIN)
+  const api = `https://todo.${process.env.DOMAIN}/api`;
   const hi = async () => {
     const res = await axios.get(api)
     .then(
@@ -44,7 +44,7 @@ import TodoSave from './todoSave.vue';
       err => { console.log(err); return err; }
     );
 
-    for ( let i = 0; i < res.length; i ++ )
+    for ( let i = 0; i < res.data.length; i ++ )
         tasks.value.push( 
           {
             id: res.data[i].id,
@@ -96,6 +96,7 @@ import TodoSave from './todoSave.vue';
       err => { console.log(err); return err; }
       );
   }
+  console.log(tasks.value)
 </script>
 
 <style>

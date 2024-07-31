@@ -64,6 +64,7 @@ module.exports = configure(function (/* ctx */) {
 
       env: {
         DOMAIN: process.env.DOMAIN,
+        HTTPS: process.env.TRAEFIK_PORT_HTTPS
       },
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
@@ -94,9 +95,14 @@ module.exports = configure(function (/* ctx */) {
     devServer: {
       
       // https: true
-      https: true,
+      cors: true,
       open: true, // opens browser window automatically
-      port: 8080,
+      port: process.env.APP_PORT,
+      hmr: {
+        host: `todo.${process.env.DOMAIN}`,
+        clientPort: process.env.TRAEFIK_PORT_HTTPS,
+        protocol: "wss",
+      },
 
       },
 
