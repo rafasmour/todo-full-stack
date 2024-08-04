@@ -1,9 +1,4 @@
-
-version: '3.1'
-
-
 services:
-  
   api:
     build:
       context: ./api
@@ -24,7 +19,6 @@ services:
       - ${API_PORT}:${API_PORT}
     volumes:
       - ./api/src:/src
-      - ./api/src/certs:/src/certs
     depends_on:
       - mongo
       - traefik
@@ -112,7 +106,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - ./traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
       - ./traefik/dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml:ro
-      - ./traefik/certs:/etc/certs
+      - ./traefik/certs:/etc/certs:ro
     labels:
       - "traefik.enable=true"
 
