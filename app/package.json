@@ -1,16 +1,13 @@
 {
-  "name": "app",
+  "name": "todoapp",
   "version": "0.0.1",
-  "description": "app",
+  "description": "full stack todo application",
   "productName": "app",
-  "author": "",
+  "author": "Rafail Mourouzidis",
   "private": true,
+  "license": "MIT LICENSE",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
-    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
-    "test": "echo \"No test specified\" && exit 0",
-    "dev": "quasar dev",
-    "build": "quasar build"
+    "dev": "quasar dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",

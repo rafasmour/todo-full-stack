@@ -9,14 +9,13 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`todo.${DOMAIN}`) && PathPrefix(`/api`)"
       - "traefik.http.services.api.loadbalancer.server.port=${API_PORT}"
-      - "--providers.docker.network=webgateway"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls=true"
       - "traefik.http.routers.api.tls.options=myTLSOptions@file"
     networks:
       - webgateway
     ports: 
-      - ${API_PORT}:${API_PORT}
+      - ${API_PORT}
     volumes:
       - ./api/src:/src
     depends_on:
@@ -28,7 +27,7 @@ services:
       dockerfile: ./Dockerfile 
     env_file: ".env"
     ports: 
-      - ${APP_PORT}:${APP_PORT}
+      - ${APP_PORT}
     container_name: app
     command: "npm run dev"
     labels:
@@ -36,7 +35,6 @@ services:
       - "traefik.http.routers.app=true"
       - "traefik.http.routers.app.rule=Host(`todo.${DOMAIN}`)"
       - "traefik.http.services.app.loadbalancer.server.port=${APP_PORT}"
-      - "--providers.docker.network=webgateway"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.options=myTLSOptions@file"
     networks:
@@ -49,11 +47,15 @@ services:
     env_file: ".env"
     volumes:
       - ./data:/data
+      - ./data/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_ROOT_PASS}
+      MONGODB_DB: ${DATABASE_DB}
+      MONGODB_USER: ${DATABASE_USER}
+      MONGODB_PASS: ${DATABASE_PASS}
     ports:
-      - ${DATABASE_PORT}:${DATABASE_PORT}
+      - ${DATABASE_PORT}
     networks:
       - webgateway
   mongo-express:
@@ -65,13 +67,12 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${DATABASE_PASS}
       ME_CONFIG_MONGODB_URL: ${DATABASE_URI}
     ports:
-      - ${MONGO_EXPRESS_PORT}:${MONGO_EXPRESS_PORT}
+      - ${MONGO_EXPRESS_PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mongo-express.rule=Host(`dbadmin.${DOMAIN}`)"
       - "traefik.http.routers.mongo-express.entrypoints=websecure"
       - "traefik.http.services.mongo-express.loadbalancer.server.port=${MONGO_EXPRESS_PORT}"
-      - "--providers.docker.network=webgateway"
       - "traefik.http.routers.mongo-express.tls=true"
       - "traefik.http.routers.mongo-express.tls.options=myTLSOptions@file"
     networks:
