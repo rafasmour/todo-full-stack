@@ -100,7 +100,7 @@ module.exports = configure(function (/* ctx */) {
       port: process.env.APP_PORT,
       hmr: {
         host: `todo.${process.env.DOMAIN}`,
-        clientPort: process.env.TRAEFIK_PORT_HTTPS,
+        clientPort: 443,
         protocol: "wss",
       },
 

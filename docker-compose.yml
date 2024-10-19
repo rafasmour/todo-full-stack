@@ -20,7 +20,6 @@ services:
       - ./api/src:/src
     depends_on:
       - mongo
-      - traefik
   app:
     build:
       context: ./app
@@ -45,27 +44,34 @@ services:
     image: mongo
     container_name: mongo
     env_file: ".env"
-    volumes:
-      - ./data:/data
-      - ./data/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DATABASE_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_ROOT_PASS}
       MONGODB_DB: ${DATABASE_DB}
       MONGODB_USER: ${DATABASE_USER}
       MONGODB_PASS: ${DATABASE_PASS}
+      MONGO_INITDB_DATABASE: ${DATABASE_ROOT_DATABASE}
     ports:
       - ${DATABASE_PORT}
     networks:
       - webgateway
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - ./data/db:/data/db
+      - ./data/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
   mongo-express:
     image: mongo-express
     container_name: mongo_express
     env_file: ".env"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DATABASE_USER}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DATABASE_PASS}
-      ME_CONFIG_MONGODB_URL: ${DATABASE_URI}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DATABASE_ROOT_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DATABASE_ROOT_PASS}
+      ME_CONFIG_MONGODB_URL: ${MONGO_EXPRESS_URI}
     ports:
       - ${MONGO_EXPRESS_PORT}
     labels:
@@ -79,57 +85,9 @@ services:
       - webgateway 
     depends_on:
       - mongo
-      - traefik
-  traefik:
-    image: "traefik:v2.10"
-    container_name: "traefik"
-    restart: always
-    env_file: ".env"
-    command:
-      - "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:${TRAEFIK_PORT_HTTP}"
-      - "--entrypoints.websecure.address=:${TRAEFIK_PORT_HTTPS}"
-      - "--api.dashboard=true"
-      - "--providers.docker.network=webgateway"
-      
-    ports:
-      - "${TRAEFIK_PORT_HTTP}:${TRAEFIK_PORT_HTTP}"
-      - "${TRAEFIK_PORT_HTTPS}:${TRAEFIK_PORT_HTTPS}"
-    environment:
-      - "OVH_ENDPOINT=xxx"
-      - "OVH_APPLICATION_KEY=xxx"
-      - "OVH_APPLICATION_SECRET=xxx"
-      - "OVH_CONSUMER_KEY=xxx"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - ./traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
-      - ./traefik/dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml:ro
-      - ./traefik/certs:/etc/certs:ro
-    labels:
-      - "traefik.enable=true"
-
-      
-    networks:
-      - webgateway
-
-  whoami:
-    image: "traefik/whoami"
-    container_name: "simple-service"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN}`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.whoami.tls.options=myTLSOptions@file"
-
-    networks:
-      - webgateway
-    depends_on:
-      - traefik
+  
   
 networks:
   webgateway:
     external: true
+    driver: bridge
