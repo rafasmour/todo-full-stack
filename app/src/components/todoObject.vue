@@ -14,7 +14,7 @@
         </q-checkbox>
         </q-item-section>
         <q-item-section>
-          <q-item-label> {{ taskData.title }} </q-item-label>
+          <q-item-label> {{ taskData.task }} </q-item-label>
         </q-item-section>
         <q-item-section>
           <q-item-label @click="emit('deleteTask', taskData.id)"> <o class="fa fa-trash"></o></q-item-label>

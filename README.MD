@@ -17,7 +17,7 @@ Finally, we have Docker used to run the development enviroment as containers and
 also we use Traefik to run the application in a local domain.
 
 # Prequisites
-1. Have Docker compose installed 
+1. Have Docker compose installed and a traefik image configured to run https
 2. Create a webgateway network ```docker network create -d bridge webgateway```
 3. Rename .env.test to .env and configure it by adding the needed values
 5. create the folder /traefik/certs and add your certificates in that path so traefik can run the services with HTTPS

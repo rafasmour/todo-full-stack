@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TodoModule } from './todo/todo.module';
 import { MongooseModule } from '@nestjs/mongoose';
 const uri = `${process.env.DATABASE_URI}`
+console.log(uri)
 @Module({
   imports: [
     TodoModule, 

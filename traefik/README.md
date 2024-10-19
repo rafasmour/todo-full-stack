@@ -1,2 +1,0 @@
-# traefik
-hello world!

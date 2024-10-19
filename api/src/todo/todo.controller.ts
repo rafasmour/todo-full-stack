@@ -19,6 +19,16 @@ export class TodoController {
         const result = await this.todoService.insertTodo(task, done);
         return result;
     }
+    @Post('/array')
+    async addTodos(
+        @Body() todos: [ { task:string, done:boolean } ]
+    ){
+        console.log(todos)
+        todos.forEach( (todo) => {
+            const result =  this.todoService.insertTodo(todo.task, todo.done)
+        })
+        
+    }
     @Get()
     async getAllTodos() {
         return this.todoService.getTodo();

@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { Ref, ref } from 'vue' 
 const emit = defineEmits(['addTask'])
-let task: Ref<string> = ref('');
+const task: Ref<string> = ref('');
 const onSubmit = () => {
     if( !task.value ){
         alert('task cannot be empty');

@@ -5,7 +5,7 @@
       <q-list 
         class="bg-gray"
         v-for="task in tasks"
-          :key="task.title"
+          :key="task.task"
           tag="label" 
         bordered
         seperator
@@ -27,14 +27,13 @@
 <script setup lang="ts">
   import { v4 as uuid } from 'uuid';
   import { Task } from '../types/task'
-  import todoObject from './todoObject.vue'
+  import todoObject from '../components/todoObject.vue'
   import { Ref, ref } from 'vue'
-  import addTodo from './addTodo.vue'
+  import addTodo from '../components/addTodo.vue'
   import axios from 'axios'
-  import TodoSave from './todoSave.vue';
+  import TodoSave from '../components/todoSave.vue';
 
   const tasks: Ref<Task[]> = ref([]);
-  console.log(process.env.DOMAIN)
   const api = `https://todo.${process.env.DOMAIN}/api`;
   const hi = async () => {
     const res = await axios.get(api)
@@ -44,34 +43,34 @@
     .catch(
       err => { console.log(err); return err; }
     );
+    res.data.forEach( (task: { id: string, task: string, done: boolean}) => {
+      tasks.value.push(task)
+    })
 
-    for ( let i = 0; i < res.data.length; i ++ )
-        tasks.value.push( 
-          {
-            id: res.data[i].id,
-            title: res.data[i].task,
-            done: res.data[i].done
-          }
-        )
+    // for ( let i = 0; i < res.data.length; i ++ )
+    //     tasks.value.push( 
+    //       {
+    //         id: res.data[i].id,
+    //         title: res.data[i].task,
+    //         done: res.data[i].done
+    //       }
+    //     )
   }
   hi()
   const changeDone = ( id: string) => {
     console.log(id)
     var index = tasks.value.findIndex( task => task.id == id);
-    console.log(index);
-    console.log(tasks.value[index])
     tasks.value[index].done = !tasks.value[index].done
-    console.log(tasks.value[index])
     
   }
   const deleteTask = ( id: string ) => {
     var index = tasks.value.findIndex( task => task.id == id);
     tasks.value.splice(index, 1)
   }
-  const addTask = ( title: string ) => {
+  const addTask = ( task: string ) => {
     tasks.value.push({
       id: uuid(),
-      title: title,
+      task: task,
       done: false
     })
   }
@@ -83,12 +82,8 @@
     .catch(
       err => { console.log(err); return err; }
     );
-    for( let i = 0; i < tasks.value.length; i++)
-      axios.post(api, 
-        {
-          task: tasks.value[i].title,
-          done: tasks.value[i].done
-        }
+    axios.post(api + '/array', 
+        tasks.value
       )
       .then(
         res => { console.log(res); return res; }
@@ -97,7 +92,6 @@
       err => { console.log(err); return err; }
       );
   }
-  console.log(tasks.value)
 </script>
 
 <style>
