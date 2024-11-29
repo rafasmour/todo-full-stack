@@ -64,7 +64,7 @@ module.exports = configure(function (/* ctx */) {
 
       env: {
         DOMAIN: process.env.DOMAIN,
-        HTTPS: process.env.TRAEFIK_PORT_HTTPS
+        HTTPS: 443
       },
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
