@@ -88,6 +88,5 @@ services:
   
   
 networks:
-  webgateway:
+  ${NETWORK}:
     external: true
-    driver: bridge
