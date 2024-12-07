@@ -88,5 +88,6 @@ services:
   
   
 networks:
-  ${NETWORK}:
+  webgateway:
+    name: ${NETWORK}
     external: true
