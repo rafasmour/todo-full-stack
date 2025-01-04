@@ -35,7 +35,7 @@
 
   const tasks: Ref<Task[]> = ref([]);
   const api = `https://todo.${process.env.DOMAIN}/api`;
-  const hi = async () => {
+  const fetch = async () => {
     const res = await axios.get(api)
     .then(
       res => { console.log(res); return res; }
@@ -56,7 +56,7 @@
     //       }
     //     )
   }
-  hi()
+  fetch()
   const changeDone = ( id: string) => {
     console.log(id)
     var index = tasks.value.findIndex( task => task.id == id);
