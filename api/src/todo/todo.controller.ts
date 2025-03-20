@@ -6,7 +6,7 @@ import { TodoService } from "./todo.service";
 
 
 
-@Controller('/api')
+@Controller('api')
 export class TodoController {
     constructor(private readonly todoService: TodoService){
     }
@@ -19,7 +19,7 @@ export class TodoController {
         const result = await this.todoService.insertTodo(task, done);
         return result;
     }
-    @Post('/array')
+    @Post('array')
     async addTodos(
         @Body() todos: [ { task:string, done:boolean } ]
     ){
